@@ -1,92 +1,122 @@
 # hoplog
 
-Craft beer tasting note JSON API built on [NENE2](https://github.com/hideyukiMORI/nene2).
+クラフトビールのテイスティングノートを管理する JSON API。
+[NENE2](https://github.com/hideyukiMORI/nene2) フレームワーク上に構築。
 
-## Requirements
+## 必要なもの
 
-- Docker Desktop (PHP 8.4 runs inside the container)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)（PHP 8.4 はコンテナ内で動く）
 
-## Quick start
+## クイックスタート
 
 ```bash
-# Clone and start
 git clone https://github.com/hideyukiMORI/hoplog.git
 cd hoplog
-cp .env.example .env
 
-# Install dependencies
+# Docker イメージをビルド
+docker compose build
+
+# 依存パッケージをインストール
 docker compose run --rm app composer install
 
-# Start API server (http://localhost:8080)
+# API サーバーを起動（初回起動時にシードデータが自動投入される）
 docker compose up -d app
-
-# Open the SPA frontend
-open public/hoplog.html
 ```
 
-## API endpoints
+起動後、ブラウザで **http://localhost:8080/hoplog.html** を開くとフロントエンドが使えます。
 
-| Method | Path | Description |
+> **シードデータについて**  
+> 初回起動時に架空の醸造所 10 件・ビール 30 件・テイスティングノート 60 件が自動で投入されます。  
+> コンテナを再起動しても `/tmp/hoplog.sqlite` が存在しない場合のみ再投入されます。
+
+## API エンドポイント
+
+| メソッド | パス | 説明 |
 |--------|------|-------------|
-| GET | `/health` | Health check |
-| GET | `/breweries` | List breweries |
-| POST | `/breweries` | Create brewery |
-| GET | `/breweries/{id}` | Get brewery |
-| PUT | `/breweries/{id}` | Update brewery |
-| DELETE | `/breweries/{id}` | Delete brewery |
-| GET | `/beers` | List beers |
-| POST | `/beers` | Create beer |
-| GET | `/beers/{id}` | Get beer |
-| PUT | `/beers/{id}` | Update beer |
-| DELETE | `/beers/{id}` | Delete beer |
-| GET | `/tasting-notes` | List tasting notes |
-| POST | `/tasting-notes` | Create tasting note |
-| GET | `/tasting-notes/{id}` | Get tasting note |
-| PUT | `/tasting-notes/{id}` | Update tasting note |
-| DELETE | `/tasting-notes/{id}` | Delete tasting note |
+| GET | `/health` | ヘルスチェック |
+| GET | `/breweries` | 醸造所一覧 |
+| POST | `/breweries` | 醸造所を作成 |
+| GET | `/breweries/{id}` | 醸造所を取得 |
+| PUT | `/breweries/{id}` | 醸造所を更新 |
+| DELETE | `/breweries/{id}` | 醸造所を削除 |
+| GET | `/beers` | ビール一覧 |
+| POST | `/beers` | ビールを作成 |
+| GET | `/beers/{id}` | ビールを取得 |
+| PUT | `/beers/{id}` | ビールを更新 |
+| DELETE | `/beers/{id}` | ビールを削除 |
+| GET | `/tasting-notes` | テイスティングノート一覧（rated_at 降順）|
+| POST | `/tasting-notes` | テイスティングノートを作成 |
+| GET | `/tasting-notes/{id}` | テイスティングノートを取得 |
+| PUT | `/tasting-notes/{id}` | テイスティングノートを更新 |
+| DELETE | `/tasting-notes/{id}` | テイスティングノートを削除 |
 
-Full spec: [`docs/openapi/openapi.yaml`](docs/openapi/openapi.yaml)
+完全な仕様: [`docs/openapi/openapi.yaml`](docs/openapi/openapi.yaml)
 
-## Development
+## 開発コマンド
 
 ```bash
-# Run all checks (tests + static analysis + code style)
+# テスト・静的解析・コードスタイルを一括実行
 docker compose run --rm app composer check
 
-# Individual checks
-docker compose run --rm app composer test      # PHPUnit
-docker compose run --rm app composer analyse   # PHPStan level 8
-docker compose run --rm app composer cs        # PHP-CS-Fixer (check)
-docker compose run --rm app composer cs:fix    # PHP-CS-Fixer (fix)
+# 個別実行
+docker compose run --rm app composer test       # PHPUnit（18 tests）
+docker compose run --rm app composer analyse    # PHPStan level 8
+docker compose run --rm app composer cs         # PHP-CS-Fixer（チェックのみ）
+docker compose run --rm app composer cs:fix     # PHP-CS-Fixer（自動修正）
+docker compose run --rm app composer db:init    # DB 手動初期化（スキーマ + シード）
 ```
 
-## Project structure
+## MCP 連携
+
+Claude Code などの MCP クライアントから hoplog API を直接呼び出せます。
+`.mcp.json` に設定済みなので、Claude Code を再起動するだけで以下のツールが使えます。
+
+| ツール | 説明 |
+|---|---|
+| `hoplog_list_breweries` | 醸造所一覧 |
+| `hoplog_get_brewery` | 醸造所詳細 |
+| `hoplog_list_beers` | ビール一覧 |
+| `hoplog_get_beer` | ビール詳細 |
+| `hoplog_list_tasting_notes` | テイスティングノート一覧 |
+| `hoplog_get_tasting_note` | テイスティングノート詳細 |
+
+> MCP を使うには `docker compose up -d app` でサーバーが起動している必要があります。
+
+## データベース
+
+デフォルトは SQLite（ローカル開発向け）。MySQL に切り替える場合は `.env.example` を参照。
+
+```bash
+cp .env.example .env
+# .env を編集して DB_ADAPTER=mysql に変更
+```
+
+## プロジェクト構成
 
 ```
 src/
-  Brewery/          # Brewery domain (Entity, UseCase, Handler, Repository)
-  Beer/             # Beer domain
-  TastingNote/      # TastingNote domain
+  Brewery/          # Entity / UseCase / Handler / Repository
+  Beer/
+  TastingNote/
   HoplogServiceProvider.php
   HoplogContainerFactory.php
 tests/
-  Brewery/          # HTTP integration tests with InMemoryRepository
+  Brewery/          # InMemoryRepository を使った HTTP 統合テスト
   Beer/
   TastingNote/
-docs/
-  openapi/          # OpenAPI 3.1.0 spec
-  mcp/              # MCP tools catalog (6 read-only tools)
-public/
-  index.php         # Front controller
-  hoplog.html       # SPA frontend
+bin/
+  db-init.php       # SQLite スキーマ + シード自動適用
+  mcp-server.php    # MCP サーバー（Claude Code 連携用）
 database/
-  schema/schema.sql # SQLite / MySQL schema
+  schema/schema.sql
+  seeds/seed.sql
+docs/
+  openapi/openapi.yaml
+  mcp/tools.json
+public/
+  index.php         # フロントコントローラー
+  hoplog.html       # SPA フロントエンド
 ```
-
-## MCP integration
-
-`docs/mcp/tools.json` exposes 6 read-only tools for AI assistants:
-`hoplog_list_breweries`, `hoplog_get_brewery`, `hoplog_list_beers`, `hoplog_get_beer`, `hoplog_list_tasting_notes`, `hoplog_get_tasting_note`
 
 ## License
 
