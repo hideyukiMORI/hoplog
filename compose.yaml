@@ -12,7 +12,11 @@ services:
       APP_DEBUG: ${APP_DEBUG:-true}
       APP_NAME: ${APP_NAME:-hoplog}
       DB_ADAPTER: ${DB_ADAPTER:-sqlite}
-      DB_SQLITE_PATH: ${DB_SQLITE_PATH:-/tmp/hoplog.sqlite}
+      DB_NAME: ${DB_NAME:-/tmp/hoplog.sqlite}
+      DB_HOST: ${DB_HOST:-localhost}
+      DB_USER: ${DB_USER:-hoplog}
+      DB_PASSWORD: ${DB_PASSWORD:-}
+      DB_CHARSET: ${DB_CHARSET:-utf8mb4}
     command: php -S 0.0.0.0:8080 -t public
 
   mysql:
