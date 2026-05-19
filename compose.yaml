@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+      - composer_cache:/root/.composer
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: ${APP_ENV:-local}
+      APP_DEBUG: ${APP_DEBUG:-true}
+      APP_NAME: ${APP_NAME:-hoplog}
+      DB_ADAPTER: ${DB_ADAPTER:-sqlite}
+      DB_SQLITE_PATH: ${DB_SQLITE_PATH:-/tmp/hoplog.sqlite}
+    command: php -S 0.0.0.0:8080 -t public
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: hoplog
+      MYSQL_USER: hoplog
+      MYSQL_PASSWORD: hoplog
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+  composer_cache:
