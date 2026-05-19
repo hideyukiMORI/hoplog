@@ -1,97 +1,98 @@
 # hoplog
 
-クラフトビールのテイスティングノートを管理する JSON API。
-[NENE2](https://github.com/hideyukiMORI/nene2) フレームワーク上に構築。
+A JSON API for managing craft beer tasting notes, built on the [NENE2](https://github.com/hideyukiMORI/nene2) framework.
 
-## 必要なもの
+## Requirements
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)（PHP 8.4 はコンテナ内で動く）
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (PHP 8.4 runs inside the container)
 
-## クイックスタート
+## Quick Start
 
 ```bash
 git clone https://github.com/hideyukiMORI/hoplog.git
 cd hoplog
 
-# Docker イメージをビルド
+# Build the Docker image
 docker compose build
 
-# 依存パッケージをインストール
+# Install dependencies
 docker compose run --rm app composer install
 
-# API サーバーを起動（初回起動時にシードデータが自動投入される）
+# Start the API server (seed data is applied automatically on first boot)
 docker compose up -d app
 ```
 
-起動後、ブラウザで **http://localhost:8080/hoplog.html** を開くとフロントエンドが使えます。
+After starting, open **http://localhost:8080/hoplog.html** in your browser to use the frontend.
 
-> **シードデータについて**  
-> 初回起動時に架空の醸造所 10 件・ビール 30 件・テイスティングノート 60 件が自動で投入されます。  
-> コンテナを再起動しても `/tmp/hoplog.sqlite` が存在しない場合のみ再投入されます。
+> **Seed data**
+> On first boot, 10 breweries, 30 beers, and 60 tasting notes are seeded automatically.
+> They are re-seeded only when `/tmp/hoplog.sqlite` does not exist (i.e. after a container wipe).
 
-## API エンドポイント
+## API Endpoints
 
-| メソッド | パス | 説明 |
+| Method | Path | Description |
 |--------|------|-------------|
-| GET | `/health` | ヘルスチェック |
-| GET | `/breweries` | 醸造所一覧 |
-| POST | `/breweries` | 醸造所を作成 |
-| GET | `/breweries/{id}` | 醸造所を取得 |
-| PUT | `/breweries/{id}` | 醸造所を更新 |
-| DELETE | `/breweries/{id}` | 醸造所を削除 |
-| GET | `/beers` | ビール一覧 |
-| POST | `/beers` | ビールを作成 |
-| GET | `/beers/{id}` | ビールを取得 |
-| PUT | `/beers/{id}` | ビールを更新 |
-| DELETE | `/beers/{id}` | ビールを削除 |
-| GET | `/tasting-notes` | テイスティングノート一覧（rated_at 降順）|
-| POST | `/tasting-notes` | テイスティングノートを作成 |
-| GET | `/tasting-notes/{id}` | テイスティングノートを取得 |
-| PUT | `/tasting-notes/{id}` | テイスティングノートを更新 |
-| DELETE | `/tasting-notes/{id}` | テイスティングノートを削除 |
+| GET | `/health` | Health check |
+| GET | `/breweries` | List breweries |
+| POST | `/breweries` | Create a brewery |
+| GET | `/breweries/{id}` | Get a brewery |
+| PUT | `/breweries/{id}` | Update a brewery |
+| DELETE | `/breweries/{id}` | Delete a brewery |
+| GET | `/beers` | List beers |
+| POST | `/beers` | Create a beer |
+| GET | `/beers/{id}` | Get a beer |
+| PUT | `/beers/{id}` | Update a beer |
+| DELETE | `/beers/{id}` | Delete a beer |
+| GET | `/tasting-notes` | List tasting notes (ordered by `rated_at` desc) |
+| POST | `/tasting-notes` | Create a tasting note |
+| GET | `/tasting-notes/{id}` | Get a tasting note |
+| PUT | `/tasting-notes/{id}` | Update a tasting note |
+| DELETE | `/tasting-notes/{id}` | Delete a tasting note |
 
-完全な仕様: [`docs/openapi/openapi.yaml`](docs/openapi/openapi.yaml)
+Full spec: [`docs/openapi/openapi.yaml`](docs/openapi/openapi.yaml)
 
-## 開発コマンド
+## Development Commands
 
 ```bash
-# テスト・静的解析・コードスタイルを一括実行
+# Run all checks at once (tests + static analysis + code style)
 docker compose run --rm app composer check
 
-# 個別実行
-docker compose run --rm app composer test       # PHPUnit（18 tests）
+# Run individually
+docker compose run --rm app composer test       # PHPUnit (18 tests)
 docker compose run --rm app composer analyse    # PHPStan level 8
-docker compose run --rm app composer cs         # PHP-CS-Fixer（チェックのみ）
-docker compose run --rm app composer cs:fix     # PHP-CS-Fixer（自動修正）
-docker compose run --rm app composer db:init    # DB 手動初期化（スキーマ + シード）
+docker compose run --rm app composer cs         # PHP-CS-Fixer (check only)
+docker compose run --rm app composer cs:fix     # PHP-CS-Fixer (auto-fix)
+docker compose run --rm app composer db:init    # Manually re-initialize DB (schema + seed)
 ```
 
-## MCP 連携
+## MCP Integration
 
-Claude Code などの MCP クライアントから hoplog API を直接呼び出せます。
-`.mcp.json` に設定済みなので、Claude Code を再起動するだけで以下のツールが使えます。
+hoplog exposes its API as MCP tools so that Claude Code (and other MCP clients) can call it directly.
+`.mcp.json` is pre-configured — just restart Claude Code and the tools become available.
 
-| ツール | 説明 |
+| Tool | Description |
 |---|---|
-| `hoplog_list_breweries` | 醸造所一覧 |
-| `hoplog_get_brewery` | 醸造所詳細 |
-| `hoplog_list_beers` | ビール一覧 |
-| `hoplog_get_beer` | ビール詳細 |
-| `hoplog_list_tasting_notes` | テイスティングノート一覧 |
-| `hoplog_get_tasting_note` | テイスティングノート詳細 |
+| `hoplog_list_breweries` | List breweries |
+| `hoplog_get_brewery` | Get brewery by ID |
+| `hoplog_list_beers` | List beers |
+| `hoplog_get_beer` | Get beer by ID |
+| `hoplog_list_tasting_notes` | List tasting notes |
+| `hoplog_get_tasting_note` | Get tasting note by ID |
 
-> MCP を使うには `docker compose up -d app` でサーバーが起動している必要があります。
+For the full setup guide and verified working proof, see [docs/mcp/README.md](docs/mcp/README.md).
 
-## データベース
+> The MCP server requires `docker compose up -d app` to be running first.
 
-デフォルトは SQLite（ローカル開発向け）。MySQL に切り替える場合は `.env.example` を参照。
+## Database
+
+SQLite by default (for local development). To switch to MySQL, see `.env.example`.
 
 ```bash
 cp .env.example .env
-# .env を編集して DB_ADAPTER=mysql に変更
+# Edit .env and set DB_ADAPTER=mysql
 ```
 
-## プロジェクト構成
+## Project Structure
 
 ```
 src/
@@ -101,21 +102,22 @@ src/
   HoplogServiceProvider.php
   HoplogContainerFactory.php
 tests/
-  Brewery/          # InMemoryRepository を使った HTTP 統合テスト
+  Brewery/          # HTTP integration tests using InMemoryRepository
   Beer/
   TastingNote/
 bin/
-  db-init.php       # SQLite スキーマ + シード自動適用
-  mcp-server.php    # MCP サーバー（Claude Code 連携用）
+  db-init.php       # SQLite schema + seed auto-apply
+  mcp-server.php    # MCP server (Claude Code integration)
 database/
   schema/schema.sql
   seeds/seed.sql
 docs/
   openapi/openapi.yaml
   mcp/tools.json
+  mcp/README.md     # MCP setup guide & verification record
 public/
-  index.php         # フロントコントローラー
-  hoplog.html       # SPA フロントエンド
+  index.php         # Front controller
+  hoplog.html       # SPA frontend
 ```
 
 ## License
