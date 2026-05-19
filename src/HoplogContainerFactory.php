@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Hoplog;
 
-use Hoplog\Brewery\BreweryNotFoundExceptionHandler;
-use Hoplog\Brewery\BreweryRouteRegistrar;
 use Hoplog\Beer\BeerNotFoundExceptionHandler;
 use Hoplog\Beer\BeerRouteRegistrar;
+use Hoplog\Brewery\BreweryNotFoundExceptionHandler;
+use Hoplog\Brewery\BreweryRouteRegistrar;
 use Hoplog\TastingNote\TastingNoteNotFoundExceptionHandler;
 use Hoplog\TastingNote\TastingNoteRouteRegistrar;
 use LogicException;
@@ -24,8 +24,7 @@ final readonly class HoplogContainerFactory
 {
     public function __construct(
         private ?string $projectRoot = null,
-    ) {
-    }
+    ) {}
 
     public function create(): ContainerInterface
     {

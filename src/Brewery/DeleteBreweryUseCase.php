@@ -8,8 +8,7 @@ final readonly class DeleteBreweryUseCase implements DeleteBreweryUseCaseInterfa
 {
     public function __construct(
         private BreweryRepositoryInterface $breweries,
-    ) {
-    }
+    ) {}
 
     public function execute(DeleteBreweryInput $input): void
     {

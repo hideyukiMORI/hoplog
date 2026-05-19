@@ -16,6 +16,5 @@ final readonly class ListTastingNoteItem
         public string $ratedAt,
         public string $createdAt,
         public string $updatedAt,
-    ) {
-    }
+    ) {}
 }

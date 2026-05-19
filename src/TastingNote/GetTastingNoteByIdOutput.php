@@ -16,6 +16,5 @@ final readonly class GetTastingNoteByIdOutput
         public string $ratedAt,
         public string $createdAt,
         public string $updatedAt,
-    ) {
-    }
+    ) {}
 }

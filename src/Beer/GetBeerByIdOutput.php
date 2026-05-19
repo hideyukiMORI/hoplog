@@ -16,6 +16,5 @@ final readonly class GetBeerByIdOutput
         public string $description,
         public string $createdAt,
         public string $updatedAt,
-    ) {
-    }
+    ) {}
 }

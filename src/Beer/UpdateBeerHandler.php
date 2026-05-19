@@ -17,8 +17,7 @@ final readonly class UpdateBeerHandler
     public function __construct(
         private UpdateBeerUseCaseInterface $useCase,
         private JsonResponseFactory $response,
-    ) {
-    }
+    ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

@@ -39,7 +39,7 @@ final class InMemoryBeerRepository implements BeerRepositoryInterface
     /** @return list<Beer> */
     public function findByBreweryId(int $breweryId, int $limit, int $offset): array
     {
-        $filtered = array_values(array_filter($this->beers, fn (Beer $b) => $b->breweryId === $breweryId));
+        $filtered = array_values(array_filter($this->beers, fn(Beer $b) => $b->breweryId === $breweryId));
 
         return array_slice($filtered, $offset, $limit);
     }

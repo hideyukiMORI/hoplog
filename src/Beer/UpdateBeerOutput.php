@@ -14,6 +14,5 @@ final readonly class UpdateBeerOutput
         public float $abv,
         public string $imageUrl,
         public string $description,
-    ) {
-    }
+    ) {}
 }

@@ -14,6 +14,5 @@ final readonly class ListBreweryItem
         public string $websiteUrl,
         public string $createdAt,
         public string $updatedAt,
-    ) {
-    }
+    ) {}
 }

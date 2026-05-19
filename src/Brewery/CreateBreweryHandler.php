@@ -16,8 +16,7 @@ final readonly class CreateBreweryHandler
     public function __construct(
         private CreateBreweryUseCaseInterface $useCase,
         private JsonResponseFactory $response,
-    ) {
-    }
+    ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

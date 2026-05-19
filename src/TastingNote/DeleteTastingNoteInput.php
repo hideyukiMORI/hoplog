@@ -8,6 +8,5 @@ final readonly class DeleteTastingNoteInput
 {
     public function __construct(
         public int $id,
-    ) {
-    }
+    ) {}
 }

@@ -14,6 +14,5 @@ final readonly class CreateTastingNoteOutput
         public string $taste,
         public int $overall,
         public string $ratedAt,
-    ) {
-    }
+    ) {}
 }

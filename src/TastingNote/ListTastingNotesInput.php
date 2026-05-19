@@ -9,6 +9,5 @@ final readonly class ListTastingNotesInput
     public function __construct(
         public int $limit,
         public int $offset,
-    ) {
-    }
+    ) {}
 }

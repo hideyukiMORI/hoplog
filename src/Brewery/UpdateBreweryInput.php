@@ -12,6 +12,5 @@ final readonly class UpdateBreweryInput
         public string $description,
         public string $country,
         public string $websiteUrl,
-    ) {
-    }
+    ) {}
 }

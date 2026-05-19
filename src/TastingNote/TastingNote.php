@@ -16,6 +16,5 @@ final readonly class TastingNote
         public ?int $id = null,
         public ?string $createdAt = null,
         public ?string $updatedAt = null,
-    ) {
-    }
+    ) {}
 }

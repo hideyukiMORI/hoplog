@@ -8,8 +8,7 @@ final readonly class UpdateBreweryUseCase implements UpdateBreweryUseCaseInterfa
 {
     public function __construct(
         private BreweryRepositoryInterface $breweries,
-    ) {
-    }
+    ) {}
 
     public function execute(UpdateBreweryInput $input): UpdateBreweryOutput
     {

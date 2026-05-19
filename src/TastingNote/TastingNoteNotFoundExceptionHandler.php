@@ -14,8 +14,7 @@ final readonly class TastingNoteNotFoundExceptionHandler implements DomainExcept
 {
     public function __construct(
         private ProblemDetailsResponseFactory $problemDetails,
-    ) {
-    }
+    ) {}
 
     public function supports(Throwable $exception): bool
     {

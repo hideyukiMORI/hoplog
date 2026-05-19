@@ -9,6 +9,5 @@ final readonly class ListBeersInput
     public function __construct(
         public int $limit,
         public int $offset,
-    ) {
-    }
+    ) {}
 }

@@ -15,8 +15,7 @@ final readonly class BeerRouteRegistrar
         private UpdateBeerHandler $updateHandler,
         private DeleteBeerHandler $deleteHandler,
         private ListBeersHandler $listHandler,
-    ) {
-    }
+    ) {}
 
     public function __invoke(Router $router): void
     {
@@ -26,10 +25,10 @@ final readonly class BeerRouteRegistrar
         $deleteHandler = $this->deleteHandler;
         $listHandler = $this->listHandler;
 
-        $router->get('/beers', static fn (ServerRequestInterface $req) => $listHandler->handle($req));
-        $router->get('/beers/{id}', static fn (ServerRequestInterface $req) => $getHandler->handle($req));
-        $router->post('/beers', static fn (ServerRequestInterface $req) => $createHandler->handle($req));
-        $router->put('/beers/{id}', static fn (ServerRequestInterface $req) => $updateHandler->handle($req));
-        $router->delete('/beers/{id}', static fn (ServerRequestInterface $req) => $deleteHandler->handle($req));
+        $router->get('/beers', static fn(ServerRequestInterface $req) => $listHandler->handle($req));
+        $router->get('/beers/{id}', static fn(ServerRequestInterface $req) => $getHandler->handle($req));
+        $router->post('/beers', static fn(ServerRequestInterface $req) => $createHandler->handle($req));
+        $router->put('/beers/{id}', static fn(ServerRequestInterface $req) => $updateHandler->handle($req));
+        $router->delete('/beers/{id}', static fn(ServerRequestInterface $req) => $deleteHandler->handle($req));
     }
 }

@@ -14,8 +14,7 @@ final readonly class DeleteBeerHandler
     public function __construct(
         private DeleteBeerUseCaseInterface $useCase,
         private ResponseFactoryInterface $responseFactory,
-    ) {
-    }
+    ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

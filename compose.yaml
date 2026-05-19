@@ -1,9 +1,10 @@
 services:
   app:
-    image: php:8.4-cli
+    build: .
     working_dir: /var/www
     volumes:
       - .:/var/www
+      - composer_cache:/root/.composer
     ports:
       - "8080:8080"
     environment:
@@ -12,11 +13,7 @@ services:
       APP_NAME: ${APP_NAME:-hoplog}
       DB_ADAPTER: ${DB_ADAPTER:-sqlite}
       DB_SQLITE_PATH: ${DB_SQLITE_PATH:-/tmp/hoplog.sqlite}
-    command: >
-      sh -c "
-        docker-php-ext-install pdo pdo_sqlite 2>/dev/null || true &&
-        php -S 0.0.0.0:8080 -t public
-      "
+    command: php -S 0.0.0.0:8080 -t public
 
   mysql:
     image: mysql:8.0
@@ -32,3 +29,4 @@ services:
 
 volumes:
   mysql_data:
+  composer_cache:

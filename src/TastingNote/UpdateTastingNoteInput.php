@@ -14,6 +14,5 @@ final readonly class UpdateTastingNoteInput
         public string $taste,
         public int $overall,
         public string $ratedAt,
-    ) {
-    }
+    ) {}
 }

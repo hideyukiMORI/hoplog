@@ -8,8 +8,7 @@ final readonly class DeleteTastingNoteUseCase implements DeleteTastingNoteUseCas
 {
     public function __construct(
         private TastingNoteRepositoryInterface $notes,
-    ) {
-    }
+    ) {}
 
     public function execute(DeleteTastingNoteInput $input): void
     {

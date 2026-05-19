@@ -8,15 +8,14 @@ final readonly class ListBeersUseCase implements ListBeersUseCaseInterface
 {
     public function __construct(
         private BeerRepositoryInterface $beers,
-    ) {
-    }
+    ) {}
 
     public function execute(ListBeersInput $input): ListBeersOutput
     {
         $beers = $this->beers->findAll($input->limit, $input->offset);
 
         $items = array_map(
-            static fn (Beer $b) => new ListBeerItem(
+            static fn(Beer $b) => new ListBeerItem(
                 id: (int) $b->id,
                 breweryId: $b->breweryId,
                 name: $b->name,

@@ -28,7 +28,7 @@ final class InMemoryTastingNoteRepository implements TastingNoteRepositoryInterf
     /** @return list<TastingNote> */
     public function findByBeerId(int $beerId, int $limit, int $offset): array
     {
-        $filtered = array_values(array_filter($this->notes, fn (TastingNote $n) => $n->beerId === $beerId));
+        $filtered = array_values(array_filter($this->notes, fn(TastingNote $n) => $n->beerId === $beerId));
 
         return array_slice($filtered, $offset, $limit);
     }

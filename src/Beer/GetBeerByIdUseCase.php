@@ -8,8 +8,7 @@ final readonly class GetBeerByIdUseCase implements GetBeerByIdUseCaseInterface
 {
     public function __construct(
         private BeerRepositoryInterface $beers,
-    ) {
-    }
+    ) {}
 
     public function execute(GetBeerByIdInput $input): GetBeerByIdOutput
     {

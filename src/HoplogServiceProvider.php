@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Hoplog;
 
-use Hoplog\Brewery\BreweryServiceProvider;
 use Hoplog\Beer\BeerServiceProvider;
+use Hoplog\Brewery\BreweryServiceProvider;
 use Hoplog\TastingNote\TastingNoteServiceProvider;
 use Nene2\DependencyInjection\ContainerBuilder;
 use Nene2\DependencyInjection\ServiceProviderInterface;

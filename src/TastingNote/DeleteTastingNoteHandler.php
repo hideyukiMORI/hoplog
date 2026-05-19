@@ -14,8 +14,7 @@ final readonly class DeleteTastingNoteHandler
     public function __construct(
         private DeleteTastingNoteUseCaseInterface $useCase,
         private ResponseFactoryInterface $responseFactory,
-    ) {
-    }
+    ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

@@ -8,6 +8,5 @@ final readonly class DeleteBreweryInput
 {
     public function __construct(
         public int $id,
-    ) {
-    }
+    ) {}
 }

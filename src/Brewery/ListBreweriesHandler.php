@@ -14,8 +14,7 @@ final readonly class ListBreweriesHandler
     public function __construct(
         private ListBreweriesUseCaseInterface $useCase,
         private JsonResponseFactory $response,
-    ) {
-    }
+    ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -25,7 +24,7 @@ final readonly class ListBreweriesHandler
 
         return $this->response->create([
             'items' => array_map(
-                static fn (ListBreweryItem $item) => [
+                static fn(ListBreweryItem $item) => [
                     'id' => $item->id,
                     'name' => $item->name,
                     'description' => $item->description,

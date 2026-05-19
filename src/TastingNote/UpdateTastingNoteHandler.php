@@ -17,8 +17,7 @@ final readonly class UpdateTastingNoteHandler
     public function __construct(
         private UpdateTastingNoteUseCaseInterface $useCase,
         private JsonResponseFactory $response,
-    ) {
-    }
+    ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

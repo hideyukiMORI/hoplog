@@ -10,8 +10,7 @@ final readonly class PdoBeerRepository implements BeerRepositoryInterface
 {
     public function __construct(
         private DatabaseQueryExecutorInterface $query,
-    ) {
-    }
+    ) {}
 
     public function findById(int $id): ?Beer
     {
@@ -31,7 +30,7 @@ final readonly class PdoBeerRepository implements BeerRepositoryInterface
             [$limit, $offset],
         );
 
-        return array_map(fn (array $row) => $this->hydrate($row), $rows);
+        return array_map(fn(array $row) => $this->hydrate($row), $rows);
     }
 
     /** @return list<Beer> */
@@ -42,7 +41,7 @@ final readonly class PdoBeerRepository implements BeerRepositoryInterface
             [$breweryId, $limit, $offset],
         );
 
-        return array_map(fn (array $row) => $this->hydrate($row), $rows);
+        return array_map(fn(array $row) => $this->hydrate($row), $rows);
     }
 
     public function save(Beer $beer): int

@@ -16,6 +16,5 @@ final readonly class ListBeerItem
         public string $description,
         public string $createdAt,
         public string $updatedAt,
-    ) {
-    }
+    ) {}
 }

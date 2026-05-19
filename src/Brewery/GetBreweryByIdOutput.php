@@ -14,6 +14,5 @@ final readonly class GetBreweryByIdOutput
         public string $websiteUrl,
         public string $createdAt,
         public string $updatedAt,
-    ) {
-    }
+    ) {}
 }

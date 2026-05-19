@@ -16,8 +16,7 @@ final readonly class CreateTastingNoteHandler
     public function __construct(
         private CreateTastingNoteUseCaseInterface $useCase,
         private JsonResponseFactory $response,
-    ) {
-    }
+    ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

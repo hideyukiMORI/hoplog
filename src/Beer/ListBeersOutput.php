@@ -11,6 +11,5 @@ final readonly class ListBeersOutput
         public array $items,
         public int $limit,
         public int $offset,
-    ) {
-    }
+    ) {}
 }

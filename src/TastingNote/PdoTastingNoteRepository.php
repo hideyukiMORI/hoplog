@@ -10,8 +10,7 @@ final readonly class PdoTastingNoteRepository implements TastingNoteRepositoryIn
 {
     public function __construct(
         private DatabaseQueryExecutorInterface $query,
-    ) {
-    }
+    ) {}
 
     public function findById(int $id): ?TastingNote
     {
@@ -31,7 +30,7 @@ final readonly class PdoTastingNoteRepository implements TastingNoteRepositoryIn
             [$limit, $offset],
         );
 
-        return array_map(fn (array $row) => $this->hydrate($row), $rows);
+        return array_map(fn(array $row) => $this->hydrate($row), $rows);
     }
 
     /** @return list<TastingNote> */
@@ -42,7 +41,7 @@ final readonly class PdoTastingNoteRepository implements TastingNoteRepositoryIn
             [$beerId, $limit, $offset],
         );
 
-        return array_map(fn (array $row) => $this->hydrate($row), $rows);
+        return array_map(fn(array $row) => $this->hydrate($row), $rows);
     }
 
     public function save(TastingNote $note): int

@@ -15,8 +15,7 @@ final readonly class TastingNoteRouteRegistrar
         private UpdateTastingNoteHandler $updateHandler,
         private DeleteTastingNoteHandler $deleteHandler,
         private ListTastingNotesHandler $listHandler,
-    ) {
-    }
+    ) {}
 
     public function __invoke(Router $router): void
     {
@@ -26,10 +25,10 @@ final readonly class TastingNoteRouteRegistrar
         $deleteHandler = $this->deleteHandler;
         $listHandler = $this->listHandler;
 
-        $router->get('/tasting-notes', static fn (ServerRequestInterface $req) => $listHandler->handle($req));
-        $router->get('/tasting-notes/{id}', static fn (ServerRequestInterface $req) => $getHandler->handle($req));
-        $router->post('/tasting-notes', static fn (ServerRequestInterface $req) => $createHandler->handle($req));
-        $router->put('/tasting-notes/{id}', static fn (ServerRequestInterface $req) => $updateHandler->handle($req));
-        $router->delete('/tasting-notes/{id}', static fn (ServerRequestInterface $req) => $deleteHandler->handle($req));
+        $router->get('/tasting-notes', static fn(ServerRequestInterface $req) => $listHandler->handle($req));
+        $router->get('/tasting-notes/{id}', static fn(ServerRequestInterface $req) => $getHandler->handle($req));
+        $router->post('/tasting-notes', static fn(ServerRequestInterface $req) => $createHandler->handle($req));
+        $router->put('/tasting-notes/{id}', static fn(ServerRequestInterface $req) => $updateHandler->handle($req));
+        $router->delete('/tasting-notes/{id}', static fn(ServerRequestInterface $req) => $deleteHandler->handle($req));
     }
 }

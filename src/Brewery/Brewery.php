@@ -14,6 +14,5 @@ final readonly class Brewery
         public ?int $id = null,
         public ?string $createdAt = null,
         public ?string $updatedAt = null,
-    ) {
-    }
+    ) {}
 }

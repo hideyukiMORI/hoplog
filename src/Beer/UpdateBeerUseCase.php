@@ -12,8 +12,7 @@ final readonly class UpdateBeerUseCase implements UpdateBeerUseCaseInterface
     public function __construct(
         private BeerRepositoryInterface $beers,
         private BreweryRepositoryInterface $breweries,
-    ) {
-    }
+    ) {}
 
     public function execute(UpdateBeerInput $input): UpdateBeerOutput
     {

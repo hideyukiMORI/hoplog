@@ -8,6 +8,5 @@ final readonly class GetTastingNoteByIdInput
 {
     public function __construct(
         public int $id,
-    ) {
-    }
+    ) {}
 }

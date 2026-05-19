@@ -8,8 +8,7 @@ final readonly class GetTastingNoteByIdUseCase implements GetTastingNoteByIdUseC
 {
     public function __construct(
         private TastingNoteRepositoryInterface $notes,
-    ) {
-    }
+    ) {}
 
     public function execute(GetTastingNoteByIdInput $input): GetTastingNoteByIdOutput
     {

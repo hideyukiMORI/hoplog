@@ -11,6 +11,5 @@ final readonly class CreateBreweryInput
         public string $description,
         public string $country,
         public string $websiteUrl,
-    ) {
-    }
+    ) {}
 }

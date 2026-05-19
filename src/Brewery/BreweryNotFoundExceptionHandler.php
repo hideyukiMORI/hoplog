@@ -14,8 +14,7 @@ final readonly class BreweryNotFoundExceptionHandler implements DomainExceptionH
 {
     public function __construct(
         private ProblemDetailsResponseFactory $problemDetails,
-    ) {
-    }
+    ) {}
 
     public function supports(Throwable $exception): bool
     {

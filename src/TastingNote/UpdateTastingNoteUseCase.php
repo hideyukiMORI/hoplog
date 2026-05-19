@@ -12,8 +12,7 @@ final readonly class UpdateTastingNoteUseCase implements UpdateTastingNoteUseCas
     public function __construct(
         private TastingNoteRepositoryInterface $notes,
         private BeerRepositoryInterface $beers,
-    ) {
-    }
+    ) {}
 
     public function execute(UpdateTastingNoteInput $input): UpdateTastingNoteOutput
     {

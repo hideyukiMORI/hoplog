@@ -8,15 +8,14 @@ final readonly class ListTastingNotesUseCase implements ListTastingNotesUseCaseI
 {
     public function __construct(
         private TastingNoteRepositoryInterface $notes,
-    ) {
-    }
+    ) {}
 
     public function execute(ListTastingNotesInput $input): ListTastingNotesOutput
     {
         $notes = $this->notes->findAll($input->limit, $input->offset);
 
         $items = array_map(
-            static fn (TastingNote $n) => new ListTastingNoteItem(
+            static fn(TastingNote $n) => new ListTastingNoteItem(
                 id: (int) $n->id,
                 beerId: $n->beerId,
                 appearance: $n->appearance,
