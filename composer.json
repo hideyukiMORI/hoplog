@@ -27,6 +27,7 @@
         "analyse": "vendor/bin/phpstan analyse src tests --level=8",
         "cs": "vendor/bin/php-cs-fixer check --diff --allow-risky=yes",
         "cs:fix": "vendor/bin/php-cs-fixer fix --allow-risky=yes",
+        "db:init": "php bin/db-init.php",
         "check": [
             "@test",
             "@analyse",

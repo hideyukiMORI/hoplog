@@ -17,7 +17,7 @@ services:
       DB_USER: ${DB_USER:-hoplog}
       DB_PASSWORD: ${DB_PASSWORD:-}
       DB_CHARSET: ${DB_CHARSET:-utf8mb4}
-    command: php -S 0.0.0.0:8080 -t public
+    command: sh -c "php /var/www/bin/db-init.php && php -S 0.0.0.0:8080 -t public"
 
   mysql:
     image: mysql:8.0
