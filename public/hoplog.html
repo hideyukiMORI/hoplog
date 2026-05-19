@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hoplog — Craft Beer Tasting Notes</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #1a1a18;
+      --ink-soft:  #3d3d3a;
+      --ink-muted: #7a7a72;
+      --ground:    #f4f0e8;
+      --ground-2:  #ebe6da;
+      --ground-3:  #ddd8cc;
+      --amber:     #b07d3a;
+      --amber-lt:  #c9924f;
+      --amber-pale:#f0e4cc;
+      --white:     #faf9f6;
+      --border:    rgba(26,26,24,.12);
+      --border-dark: rgba(26,26,24,.24);
+
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-sans:  'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+      --space-xs:  .5rem;
+      --space-sm:  1rem;
+      --space-md:  2rem;
+      --space-lg:  4rem;
+      --space-xl:  8rem;
+
+      --radius:    2px;
+      --transition: .25s ease;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--ground);
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Typography ── */
+    h1, h2, h3 {
+      font-family: var(--font-serif);
+      font-weight: normal;
+      letter-spacing: .02em;
+    }
+
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; }
+    h2 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+    h3 { font-size: 1.125rem; }
+
+    p { color: var(--ink-soft); }
+
+    a { color: var(--ink); text-decoration: none; }
+    a:hover { color: var(--amber); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: var(--ink);
+      color: var(--ground);
+      padding: var(--space-sm) 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .site-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .site-logo {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      letter-spacing: .12em;
+      text-transform: lowercase;
+      color: var(--ground);
+    }
+
+    .site-logo span {
+      color: var(--amber-lt);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: var(--space-xs);
+      list-style: none;
+    }
+
+    .nav-tabs button {
+      background: none;
+      border: none;
+      color: rgba(244,240,232,.6);
+      font-family: var(--font-sans);
+      font-size: .8125rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: .5rem .75rem;
+      border-radius: var(--radius);
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .nav-tabs button:hover,
+    .nav-tabs button.active {
+      color: var(--ground);
+      background: rgba(244,240,232,.1);
+    }
+
+    .nav-tabs button.active {
+      border-bottom: 1px solid var(--amber-lt);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: var(--space-xl) 0 var(--space-lg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+      align-items: end;
+    }
+
+    @media (max-width: 680px) {
+      .hero-inner { grid-template-columns: 1fr; }
+    }
+
+    .hero-text h1 {
+      margin-bottom: var(--space-sm);
+    }
+
+    .hero-text p {
+      font-size: 1.0625rem;
+      max-width: 40ch;
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border);
+      padding: .625rem 0;
+    }
+
+    .stat-label {
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .stat-value {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      color: var(--amber);
+    }
+
+    /* ── Main ── */
+    main {
+      padding: var(--space-lg) 0;
+    }
+
+    /* ── Section Header ── */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .section-title {
+      font-size: .75rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      font-family: var(--font-sans);
+    }
+
+    /* ── Cards Grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-sm);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: var(--space-md);
+      cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      position: relative;
+    }
+
+    .card:hover {
+      border-color: var(--border-dark);
+      box-shadow: 0 4px 24px rgba(26,26,24,.08);
+    }
+
+    .card-eyebrow {
+      font-size: .6875rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: var(--space-xs);
+    }
+
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      line-height: 1.3;
+      margin-bottom: .75rem;
+    }
+
+    .card-meta {
+      font-size: .8125rem;
+      color: var(--ink-muted);
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .card-meta span {
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: .5rem;
+      margin-top: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-ghost {
+      background: none;
+      border: 1px solid var(--border-dark);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .375rem .75rem;
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .btn-ghost:hover {
+      background: var(--ground);
+    }
+
+    .btn-ghost.danger:hover {
+      background: #fdf0ef;
+      border-color: #c0392b;
+      color: #c0392b;
+    }
+
+    /* ── Rating ── */
+    .rating {
+      display: flex;
+      gap: 3px;
+      margin: .5rem 0;
+    }
+
+    .rating-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ground-3);
+    }
+
+    .rating-dot.filled {
+      background: var(--amber);
+    }
+
+    /* ── Form Panel ── */
+    .panel-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,24,.6);
+      z-index: 200;
+      backdrop-filter: blur(4px);
+    }
+
+    .panel-overlay.open { display: flex; align-items: center; justify-content: center; }
+
+    .panel {
+      background: var(--white);
+      width: min(640px, 95vw);
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: var(--space-lg) var(--space-md);
+      position: relative;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-md);
+    }
+
+    .panel-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+    }
+
+    .panel-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--ink-muted);
+      line-height: 1;
+      padding: .25rem;
+    }
+
+    .panel-close:hover { color: var(--ink); }
+
+    /* ── Form ── */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: .6875rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: .375rem;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--ground);
+      border: 1px solid var(--border-dark);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: .9375rem;
+      padding: .625rem .875rem;
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color var(--transition);
+      appearance: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--amber);
+      background: var(--white);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm);
+    }
+
+    @media (max-width: 480px) {
+      .form-grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* ── Rating Input ── */
+    .rating-input {
+      display: flex;
+      gap: .5rem;
+    }
+
+    .rating-input input { display: none; }
+
+    .rating-input label {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--ground-3);
+      transition: color var(--transition);
+      line-height: 1;
+    }
+
+    .rating-input label:hover,
+    .rating-input label.selected {
+      color: var(--amber);
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--font-sans);
+      font-size: .8125rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .75rem 1.5rem;
+      border: none;
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--ground);
+    }
+
+    .btn-primary:hover {
+      background: var(--ink-soft);
+    }
+
+    .btn-secondary {
+      background: var(--ground-2);
+      color: var(--ink);
+      border: 1px solid var(--border-dark);
+    }
+
+    .btn-secondary:hover {
+      background: var(--ground-3);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    /* ── Add Button ── */
+    .add-btn {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: none;
+      border: 1px solid var(--border-dark);
+      color: var(--ink-soft);
+      font-family: var(--font-sans);
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .5rem 1rem;
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: all var(--transition);
+    }
+
+    .add-btn:hover {
+      background: var(--ink);
+      color: var(--ground);
+      border-color: var(--ink);
+    }
+
+    .add-btn .icon { font-size: 1rem; }
+
+    /* ── Empty State ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-xl) 0;
+      color: var(--ink-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: var(--space-sm);
+      opacity: .4;
+    }
+
+    .empty-state p {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+    }
+
+    /* ── Toast ── */
+    .toast-stack {
+      position: fixed;
+      bottom: var(--space-md);
+      right: var(--space-md);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    .toast {
+      background: var(--ink);
+      color: var(--ground);
+      font-size: .8125rem;
+      padding: .75rem 1.25rem;
+      border-radius: var(--radius);
+      animation: toast-in .2s ease;
+      max-width: 320px;
+    }
+
+    .toast.success { border-left: 3px solid var(--amber); }
+    .toast.error   { border-left: 3px solid #c0392b; }
+
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Loading ── */
+    .loading {
+      display: flex;
+      justify-content: center;
+      padding: var(--space-lg);
+    }
+
+    .loading-dots {
+      display: flex;
+      gap: .375rem;
+    }
+
+    .loading-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      animation: dot-pulse 1.2s infinite ease-in-out;
+    }
+
+    .loading-dots span:nth-child(2) { animation-delay: .2s; }
+    .loading-dots span:nth-child(3) { animation-delay: .4s; }
+
+    @keyframes dot-pulse {
+      0%, 80%, 100% { opacity: .2; transform: scale(.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ── Tabs panel ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── ABV badge ── */
+    .abv-badge {
+      display: inline-block;
+      background: var(--amber-pale);
+      color: var(--amber);
+      font-size: .6875rem;
+      letter-spacing: .08em;
+      padding: .1875rem .5rem;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* ── Detail view ── */
+    .detail-section {
+      margin-bottom: var(--space-md);
+    }
+
+    .detail-label {
+      font-size: .6875rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: .375rem;
+    }
+
+    .detail-value {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--ink);
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: var(--space-md) 0;
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: .75rem;
+      letter-spacing: .08em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .site-header .container { flex-direction: column; align-items: flex-start; }
+      .nav-tabs { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="container">
+    <div class="site-logo">hop<span>log</span></div>
+    <nav>
+      <ul class="nav-tabs">
+        <li><button class="active" data-tab="notes" onclick="switchTab('notes', this)">Tasting Notes</button></li>
+        <li><button data-tab="beers" onclick="switchTab('beers', this)">Beers</button></li>
+        <li><button data-tab="breweries" onclick="switchTab('breweries', this)">Breweries</button></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>The art of<br>tasting beer.</h1>
+        <p>Record appearances, aromas, and flavours of craft beers with considered care.</p>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-item">
+          <span class="stat-label">Tasting Notes</span>
+          <span class="stat-value" id="stat-notes">—</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Beers</span>
+          <span class="stat-value" id="stat-beers">—</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Breweries</span>
+          <span class="stat-value" id="stat-breweries">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main -->
+<main>
+  <div class="container">
+
+    <!-- Tasting Notes Tab -->
+    <div class="tab-content active" id="tab-notes">
+      <div class="section-header">
+        <span class="section-title">Tasting Notes</span>
+        <button class="add-btn" onclick="openNoteForm()">
+          <span class="icon">＋</span> New Note
+        </button>
+      </div>
+      <div class="cards-grid" id="notes-grid">
+        <div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+
+    <!-- Beers Tab -->
+    <div class="tab-content" id="tab-beers">
+      <div class="section-header">
+        <span class="section-title">Beers</span>
+        <button class="add-btn" onclick="openBeerForm()">
+          <span class="icon">＋</span> New Beer
+        </button>
+      </div>
+      <div class="cards-grid" id="beers-grid">
+        <div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+
+    <!-- Breweries Tab -->
+    <div class="tab-content" id="tab-breweries">
+      <div class="section-header">
+        <span class="section-title">Breweries</span>
+        <button class="add-btn" onclick="openBreweryForm()">
+          <span class="icon">＋</span> New Brewery
+        </button>
+      </div>
+      <div class="cards-grid" id="breweries-grid">
+        <div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Brewery Form Panel -->
+<div class="panel-overlay" id="brewery-panel">
+  <div class="panel">
+    <div class="panel-header">
+      <h2 class="panel-title" id="brewery-panel-title">New Brewery</h2>
+      <button class="panel-close" onclick="closePanel('brewery-panel')">×</button>
+    </div>
+    <form id="brewery-form" onsubmit="submitBreweryForm(event)">
+      <input type="hidden" id="brewery-id">
+      <div class="form-group">
+        <label class="form-label">Name *</label>
+        <input class="form-control" type="text" id="brewery-name" required placeholder="e.g. Yona Yona Beer Works">
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Country</label>
+          <input class="form-control" type="text" id="brewery-country" placeholder="JP">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Website</label>
+          <input class="form-control" type="url" id="brewery-website" placeholder="https://…">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" id="brewery-description" rows="3" placeholder="About this brewery…"></textarea>
+      </div>
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="closePanel('brewery-panel')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Beer Form Panel -->
+<div class="panel-overlay" id="beer-panel">
+  <div class="panel">
+    <div class="panel-header">
+      <h2 class="panel-title" id="beer-panel-title">New Beer</h2>
+      <button class="panel-close" onclick="closePanel('beer-panel')">×</button>
+    </div>
+    <form id="beer-form" onsubmit="submitBeerForm(event)">
+      <input type="hidden" id="beer-id">
+      <div class="form-group">
+        <label class="form-label">Brewery *</label>
+        <select class="form-control" id="beer-brewery-id" required>
+          <option value="">Select a brewery…</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Beer Name *</label>
+        <input class="form-control" type="text" id="beer-name" required placeholder="e.g. Yona Yona Ale">
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Style</label>
+          <input class="form-control" type="text" id="beer-style" placeholder="e.g. American Pale Ale">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ABV (%)</label>
+          <input class="form-control" type="number" id="beer-abv" step="0.1" min="0" max="100" placeholder="5.5">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Image URL</label>
+        <input class="form-control" type="url" id="beer-image-url" placeholder="https://…">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" id="beer-description" rows="3" placeholder="About this beer…"></textarea>
+      </div>
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="closePanel('beer-panel')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Tasting Note Form Panel -->
+<div class="panel-overlay" id="note-panel">
+  <div class="panel">
+    <div class="panel-header">
+      <h2 class="panel-title" id="note-panel-title">New Tasting Note</h2>
+      <button class="panel-close" onclick="closePanel('note-panel')">×</button>
+    </div>
+    <form id="note-form" onsubmit="submitNoteForm(event)">
+      <input type="hidden" id="note-id">
+      <div class="form-group">
+        <label class="form-label">Beer *</label>
+        <select class="form-control" id="note-beer-id" required>
+          <option value="">Select a beer…</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Overall Rating *</label>
+        <div class="rating-input" id="rating-input">
+          <input type="radio" name="overall" id="r1" value="1"><label for="r1" title="1">◆</label>
+          <input type="radio" name="overall" id="r2" value="2"><label for="r2" title="2">◆</label>
+          <input type="radio" name="overall" id="r3" value="3"><label for="r3" title="3">◆</label>
+          <input type="radio" name="overall" id="r4" value="4"><label for="r4" title="4">◆</label>
+          <input type="radio" name="overall" id="r5" value="5"><label for="r5" title="5">◆</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Appearance</label>
+        <input class="form-control" type="text" id="note-appearance" placeholder="e.g. Clear golden with white foam">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Aroma</label>
+        <textarea class="form-control" id="note-aroma" rows="2" placeholder="e.g. Citrus, tropical fruit, pine…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Taste</label>
+        <textarea class="form-control" id="note-taste" rows="3" placeholder="e.g. Hoppy bitterness with citrus finish…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date Tasted</label>
+        <input class="form-control" type="date" id="note-rated-at">
+      </div>
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">Save Note</button>
+        <button type="button" class="btn btn-secondary" onclick="closePanel('note-panel')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast Stack -->
+<div class="toast-stack" id="toast-stack"></div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="container">
+    hoplog &mdash; built on NENE2
+  </div>
+</footer>
+
+<script>
+  const API = '';  // same origin
+
+  // ── State ──────────────────────────────────────────────────────────
+  let breweries = [];
+  let beers = [];
+
+  // ── Init ───────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    loadAll();
+    document.getElementById('note-rated-at').value = new Date().toISOString().slice(0, 10);
+
+    // Rating star interaction
+    document.querySelectorAll('.rating-input label').forEach((lbl, i) => {
+      lbl.addEventListener('click', () => {
+        document.querySelectorAll('.rating-input label').forEach((l, j) => {
+          l.classList.toggle('selected', j <= i);
+        });
+      });
+    });
+
+    // Close panel on overlay click
+    document.querySelectorAll('.panel-overlay').forEach(el => {
+      el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+    });
+  });
+
+  async function loadAll() {
+    await Promise.all([loadBreweries(), loadBeers(), loadNotes()]);
+  }
+
+  // ── Tab ────────────────────────────────────────────────────────────
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ── Breweries ──────────────────────────────────────────────────────
+  async function loadBreweries() {
+    const data = await api('GET', '/breweries?limit=100');
+    breweries = data.items ?? [];
+    document.getElementById('stat-breweries').textContent = breweries.length;
+    renderBreweries();
+    populateBrewerySelect();
+  }
+
+  function renderBreweries() {
+    const grid = document.getElementById('breweries-grid');
+    if (!breweries.length) {
+      grid.innerHTML = emptyState('No breweries yet. Add your first brewery.');
+      return;
+    }
+    grid.innerHTML = breweries.map(b => `
+      <div class="card">
+        <div class="card-eyebrow">${esc(b.country || '—')}</div>
+        <h3 class="card-title">${esc(b.name)}</h3>
+        <p class="card-meta" style="font-size:.875rem;">${esc(b.description || '')}</p>
+        <div class="card-actions">
+          <button class="btn-ghost" onclick="editBrewery(${b.id})">Edit</button>
+          <button class="btn-ghost danger" onclick="deleteBrewery(${b.id})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function populateBrewerySelect() {
+    const sel = document.getElementById('beer-brewery-id');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Select a brewery…</option>' +
+      breweries.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('');
+    if (cur) sel.value = cur;
+  }
+
+  function openBreweryForm(brewery = null) {
+    document.getElementById('brewery-panel-title').textContent = brewery ? 'Edit Brewery' : 'New Brewery';
+    document.getElementById('brewery-id').value = brewery?.id ?? '';
+    document.getElementById('brewery-name').value = brewery?.name ?? '';
+    document.getElementById('brewery-country').value = brewery?.country ?? '';
+    document.getElementById('brewery-website').value = brewery?.website_url ?? '';
+    document.getElementById('brewery-description').value = brewery?.description ?? '';
+    openPanel('brewery-panel');
+  }
+
+  async function editBrewery(id) {
+    const b = breweries.find(x => x.id === id);
+    if (b) openBreweryForm(b);
+  }
+
+  async function submitBreweryForm(e) {
+    e.preventDefault();
+    const id = document.getElementById('brewery-id').value;
+    const body = {
+      name: document.getElementById('brewery-name').value,
+      country: document.getElementById('brewery-country').value,
+      website_url: document.getElementById('brewery-website').value,
+      description: document.getElementById('brewery-description').value,
+    };
+    if (id) {
+      await api('PUT', `/breweries/${id}`, body);
+      toast('Brewery updated', 'success');
+    } else {
+      await api('POST', '/breweries', body);
+      toast('Brewery created', 'success');
+    }
+    closePanel('brewery-panel');
+    await loadBreweries();
+  }
+
+  async function deleteBrewery(id) {
+    if (!confirm('Delete this brewery?')) return;
+    await api('DELETE', `/breweries/${id}`);
+    toast('Brewery deleted', 'success');
+    await loadBreweries();
+  }
+
+  // ── Beers ──────────────────────────────────────────────────────────
+  async function loadBeers() {
+    const data = await api('GET', '/beers?limit=100');
+    beers = data.items ?? [];
+    document.getElementById('stat-beers').textContent = beers.length;
+    renderBeers();
+    populateBeerSelect();
+  }
+
+  function renderBeers() {
+    const grid = document.getElementById('beers-grid');
+    if (!beers.length) {
+      grid.innerHTML = emptyState('No beers yet. Add your first beer.');
+      return;
+    }
+    grid.innerHTML = beers.map(b => {
+      const brewery = breweries.find(br => br.id === b.brewery_id);
+      return `
+        <div class="card">
+          <div class="card-eyebrow">${esc(brewery?.name ?? '—')}</div>
+          <h3 class="card-title">${esc(b.name)}</h3>
+          <div class="card-meta">
+            ${b.style ? `<span>${esc(b.style)}</span>` : ''}
+            ${b.abv ? `<span class="abv-badge">${b.abv}%</span>` : ''}
+          </div>
+          ${b.description ? `<p style="margin-top:.5rem;font-size:.875rem;">${esc(b.description)}</p>` : ''}
+          <div class="card-actions">
+            <button class="btn-ghost" onclick="editBeer(${b.id})">Edit</button>
+            <button class="btn-ghost danger" onclick="deleteBeer(${b.id})">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function populateBeerSelect() {
+    const sel = document.getElementById('note-beer-id');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Select a beer…</option>' +
+      beers.map(b => {
+        const brewery = breweries.find(br => br.id === b.brewery_id);
+        return `<option value="${b.id}">${esc(b.name)}${brewery ? ' — ' + esc(brewery.name) : ''}</option>`;
+      }).join('');
+    if (cur) sel.value = cur;
+  }
+
+  function openBeerForm(beer = null) {
+    document.getElementById('beer-panel-title').textContent = beer ? 'Edit Beer' : 'New Beer';
+    document.getElementById('beer-id').value = beer?.id ?? '';
+    document.getElementById('beer-brewery-id').value = beer?.brewery_id ?? '';
+    document.getElementById('beer-name').value = beer?.name ?? '';
+    document.getElementById('beer-style').value = beer?.style ?? '';
+    document.getElementById('beer-abv').value = beer?.abv ?? '';
+    document.getElementById('beer-image-url').value = beer?.image_url ?? '';
+    document.getElementById('beer-description').value = beer?.description ?? '';
+    openPanel('beer-panel');
+  }
+
+  async function editBeer(id) {
+    const b = beers.find(x => x.id === id);
+    if (b) openBeerForm(b);
+  }
+
+  async function submitBeerForm(e) {
+    e.preventDefault();
+    const id = document.getElementById('beer-id').value;
+    const body = {
+      brewery_id: parseInt(document.getElementById('beer-brewery-id').value),
+      name: document.getElementById('beer-name').value,
+      style: document.getElementById('beer-style').value,
+      abv: parseFloat(document.getElementById('beer-abv').value) || 0,
+      image_url: document.getElementById('beer-image-url').value,
+      description: document.getElementById('beer-description').value,
+    };
+    if (id) {
+      await api('PUT', `/beers/${id}`, body);
+      toast('Beer updated', 'success');
+    } else {
+      await api('POST', '/beers', body);
+      toast('Beer added', 'success');
+    }
+    closePanel('beer-panel');
+    await loadBeers();
+  }
+
+  async function deleteBeer(id) {
+    if (!confirm('Delete this beer?')) return;
+    await api('DELETE', `/beers/${id}`);
+    toast('Beer deleted', 'success');
+    await loadBeers();
+  }
+
+  // ── Tasting Notes ──────────────────────────────────────────────────
+  async function loadNotes() {
+    const data = await api('GET', '/tasting-notes?limit=100');
+    const notes = data.items ?? [];
+    document.getElementById('stat-notes').textContent = notes.length;
+    renderNotes(notes);
+  }
+
+  function renderNotes(notes) {
+    const grid = document.getElementById('notes-grid');
+    if (!notes.length) {
+      grid.innerHTML = emptyState('No tasting notes yet. Record your first pour.');
+      return;
+    }
+    grid.innerHTML = notes.map(n => {
+      const beer = beers.find(b => b.id === n.beer_id);
+      const brewery = beer ? breweries.find(b => b.id === beer.brewery_id) : null;
+      const date = n.rated_at ? new Date(n.rated_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }) : '—';
+      return `
+        <div class="card">
+          <div class="card-eyebrow">${date}</div>
+          <h3 class="card-title">${esc(beer?.name ?? 'Unknown Beer')}</h3>
+          ${brewery ? `<p class="card-meta" style="margin-bottom:.5rem;">${esc(brewery.name)}</p>` : ''}
+          <div class="rating">
+            ${[1,2,3,4,5].map(i => `<div class="rating-dot${i <= n.overall ? ' filled' : ''}"></div>`).join('')}
+          </div>
+          ${n.appearance ? `<p style="font-size:.875rem;margin-top:.5rem;color:var(--ink-muted);"><strong style="color:var(--ink-soft);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;">Appearance</strong><br>${esc(n.appearance)}</p>` : ''}
+          ${n.aroma ? `<p style="font-size:.875rem;margin-top:.5rem;color:var(--ink-muted);"><strong style="color:var(--ink-soft);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;">Aroma</strong><br>${esc(n.aroma)}</p>` : ''}
+          ${n.taste ? `<p style="font-size:.875rem;margin-top:.5rem;color:var(--ink-muted);"><strong style="color:var(--ink-soft);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;">Taste</strong><br>${esc(n.taste)}</p>` : ''}
+          <div class="card-actions">
+            <button class="btn-ghost" onclick="editNote(${n.id})">Edit</button>
+            <button class="btn-ghost danger" onclick="deleteNote(${n.id})">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openNoteForm(note = null) {
+    document.getElementById('note-panel-title').textContent = note ? 'Edit Tasting Note' : 'New Tasting Note';
+    document.getElementById('note-id').value = note?.id ?? '';
+    document.getElementById('note-beer-id').value = note?.beer_id ?? '';
+    document.getElementById('note-appearance').value = note?.appearance ?? '';
+    document.getElementById('note-aroma').value = note?.aroma ?? '';
+    document.getElementById('note-taste').value = note?.taste ?? '';
+    document.getElementById('note-rated-at').value = note?.rated_at ? note.rated_at.slice(0, 10) : new Date().toISOString().slice(0, 10);
+
+    const overall = note?.overall ?? 0;
+    document.querySelectorAll('.rating-input label').forEach((lbl, i) => {
+      lbl.classList.toggle('selected', i < overall);
+    });
+    document.querySelectorAll('input[name="overall"]').forEach(inp => {
+      inp.checked = parseInt(inp.value) === overall;
+    });
+
+    openPanel('note-panel');
+  }
+
+  async function editNote(id) {
+    const data = await api('GET', `/tasting-notes/${id}`);
+    openNoteForm(data);
+  }
+
+  async function submitNoteForm(e) {
+    e.preventDefault();
+    const id = document.getElementById('note-id').value;
+    const overall = parseInt(document.querySelector('input[name="overall"]:checked')?.value ?? '0');
+    if (!overall) { toast('Please select a rating', 'error'); return; }
+    const ratedAt = document.getElementById('note-rated-at').value;
+    const body = {
+      beer_id: parseInt(document.getElementById('note-beer-id').value),
+      appearance: document.getElementById('note-appearance').value,
+      aroma: document.getElementById('note-aroma').value,
+      taste: document.getElementById('note-taste').value,
+      overall,
+      rated_at: ratedAt ? ratedAt + ' 00:00:00' : new Date().toISOString().slice(0, 19).replace('T', ' '),
+    };
+    if (id) {
+      await api('PUT', `/tasting-notes/${id}`, body);
+      toast('Note updated', 'success');
+    } else {
+      await api('POST', '/tasting-notes', body);
+      toast('Note saved', 'success');
+    }
+    closePanel('note-panel');
+    await loadNotes();
+  }
+
+  async function deleteNote(id) {
+    if (!confirm('Delete this tasting note?')) return;
+    await api('DELETE', `/tasting-notes/${id}`);
+    toast('Note deleted', 'success');
+    await loadNotes();
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────
+  function openPanel(id) { document.getElementById(id).classList.add('open'); }
+  function closePanel(id) { document.getElementById(id).classList.remove('open'); }
+
+  function emptyState(msg) {
+    return `<div class="empty-state">
+      <div class="empty-state-icon">◈</div>
+      <p>${esc(msg)}</p>
+    </div>`;
+  }
+
+  function esc(str) {
+    return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function toast(msg, type = 'success') {
+    const stack = document.getElementById('toast-stack');
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    stack.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+
+  async function api(method, path, body = null) {
+    const opts = { method, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    try {
+      const res = await fetch(API + path, opts);
+      if (res.status === 204) return {};
+      const data = await res.json();
+      if (!res.ok) {
+        toast(data.detail ?? data.title ?? 'Error', 'error');
+        throw new Error(data.title ?? 'API error');
+      }
+      return data;
+    } catch (err) {
+      if (!(err instanceof Error && err.message !== 'Failed to fetch')) return {};
+      toast('Connection error', 'error');
+      return {};
+    }
+  }
+</script>
+</body>
+</html>

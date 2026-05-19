@@ -1,0 +1,647 @@
+openapi: "3.1.0"
+info:
+  title: hoplog API
+  description: Craft beer tasting note JSON API built on NENE2
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8080
+    description: Local development
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Health check
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /breweries:
+    get:
+      operationId: listBreweries
+      summary: List breweries
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of breweries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BreweryList"
+              example:
+                items:
+                  - id: 1
+                    name: "Yona Yona Beer Works"
+                    description: "Craft brewery from Nagano"
+                    country: "JP"
+                    website_url: "https://yonayona.jp"
+                    created_at: "2026-05-19 12:00:00"
+                    updated_at: "2026-05-19 12:00:00"
+                limit: 20
+                offset: 0
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      operationId: createBrewery
+      summary: Create a brewery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BreweryInput"
+            example:
+              name: "Yona Yona Beer Works"
+              description: "Craft brewery from Nagano"
+              country: "JP"
+              website_url: "https://yonayona.jp"
+      responses:
+        "201":
+          description: Brewery created
+          headers:
+            Location:
+              schema:
+                type: string
+                example: "/breweries/1"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BreweryResponse"
+        "400":
+          $ref: "#/components/responses/InvalidJson"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /breweries/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getBreweryById
+      summary: Get a brewery by ID
+      responses:
+        "200":
+          description: Brewery found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BreweryResponse"
+              example:
+                id: 1
+                name: "Yona Yona Beer Works"
+                description: "Craft brewery from Nagano"
+                country: "JP"
+                website_url: "https://yonayona.jp"
+                created_at: "2026-05-19 12:00:00"
+                updated_at: "2026-05-19 12:00:00"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      operationId: updateBrewery
+      summary: Update a brewery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BreweryInput"
+      responses:
+        "200":
+          description: Brewery updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BreweryResponse"
+        "400":
+          $ref: "#/components/responses/InvalidJson"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      operationId: deleteBrewery
+      summary: Delete a brewery
+      responses:
+        "204":
+          description: Brewery deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /beers:
+    get:
+      operationId: listBeers
+      summary: List beers
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of beers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BeerList"
+              example:
+                items:
+                  - id: 1
+                    brewery_id: 1
+                    name: "Yona Yona Ale"
+                    style: "American Pale Ale"
+                    abv: 5.5
+                    image_url: ""
+                    description: "Aromatic and refreshing"
+                    created_at: "2026-05-19 12:00:00"
+                    updated_at: "2026-05-19 12:00:00"
+                limit: 20
+                offset: 0
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      operationId: createBeer
+      summary: Create a beer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BeerInput"
+      responses:
+        "201":
+          description: Beer created
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BeerResponse"
+        "400":
+          $ref: "#/components/responses/InvalidJson"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /beers/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getBeerById
+      summary: Get a beer by ID
+      responses:
+        "200":
+          description: Beer found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BeerResponse"
+              example:
+                id: 1
+                brewery_id: 1
+                name: "Yona Yona Ale"
+                style: "American Pale Ale"
+                abv: 5.5
+                image_url: ""
+                description: "Aromatic and refreshing"
+                created_at: "2026-05-19 12:00:00"
+                updated_at: "2026-05-19 12:00:00"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      operationId: updateBeer
+      summary: Update a beer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BeerInput"
+      responses:
+        "200":
+          description: Beer updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BeerResponse"
+        "400":
+          $ref: "#/components/responses/InvalidJson"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      operationId: deleteBeer
+      summary: Delete a beer
+      responses:
+        "204":
+          description: Beer deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /tasting-notes:
+    get:
+      operationId: listTastingNotes
+      summary: List tasting notes
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of tasting notes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TastingNoteList"
+              example:
+                items:
+                  - id: 1
+                    beer_id: 1
+                    appearance: "Clear golden with white foam"
+                    aroma: "Citrus and tropical fruit"
+                    taste: "Hoppy bitterness with citrus finish"
+                    overall: 4
+                    rated_at: "2026-05-19 12:00:00"
+                    created_at: "2026-05-19 12:00:00"
+                    updated_at: "2026-05-19 12:00:00"
+                limit: 20
+                offset: 0
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      operationId: createTastingNote
+      summary: Create a tasting note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TastingNoteInput"
+      responses:
+        "201":
+          description: Tasting note created
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TastingNoteResponse"
+        "400":
+          $ref: "#/components/responses/InvalidJson"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /tasting-notes/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getTastingNoteById
+      summary: Get a tasting note by ID
+      responses:
+        "200":
+          description: Tasting note found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TastingNoteResponse"
+              example:
+                id: 1
+                beer_id: 1
+                appearance: "Clear golden with white foam"
+                aroma: "Citrus and tropical fruit"
+                taste: "Hoppy bitterness with citrus finish"
+                overall: 4
+                rated_at: "2026-05-19 12:00:00"
+                created_at: "2026-05-19 12:00:00"
+                updated_at: "2026-05-19 12:00:00"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      operationId: updateTastingNote
+      summary: Update a tasting note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TastingNoteInput"
+      responses:
+        "200":
+          description: Tasting note updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TastingNoteResponse"
+        "400":
+          $ref: "#/components/responses/InvalidJson"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationFailed"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      operationId: deleteTastingNote
+      summary: Delete a tasting note
+      responses:
+        "204":
+          description: Tasting note deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  schemas:
+    BreweryInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        country:
+          type: string
+          maxLength: 100
+        website_url:
+          type: string
+          maxLength: 512
+
+    BreweryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        country:
+          type: string
+        website_url:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+
+    BreweryList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BreweryResponse"
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    BeerInput:
+      type: object
+      required:
+        - brewery_id
+        - name
+      properties:
+        brewery_id:
+          type: integer
+        name:
+          type: string
+          maxLength: 255
+        style:
+          type: string
+          maxLength: 100
+        abv:
+          type: number
+          format: float
+        image_url:
+          type: string
+          maxLength: 512
+        description:
+          type: string
+
+    BeerResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        brewery_id:
+          type: integer
+        name:
+          type: string
+        style:
+          type: string
+        abv:
+          type: number
+        image_url:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+
+    BeerList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BeerResponse"
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    TastingNoteInput:
+      type: object
+      required:
+        - beer_id
+        - overall
+      properties:
+        beer_id:
+          type: integer
+        appearance:
+          type: string
+        aroma:
+          type: string
+        taste:
+          type: string
+        overall:
+          type: integer
+          minimum: 1
+          maximum: 5
+        rated_at:
+          type: string
+          format: date-time
+
+    TastingNoteResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        beer_id:
+          type: integer
+        appearance:
+          type: string
+        aroma:
+          type: string
+        taste:
+          type: string
+        overall:
+          type: integer
+        rated_at:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+
+    TastingNoteList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TastingNoteResponse"
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "https://nene2.dev/problems/not-found"
+            title: "Not Found"
+            status: 404
+            detail: "The requested resource was not found."
+
+    ValidationFailed:
+      description: Validation failed
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "https://nene2.dev/problems/validation-failed"
+            title: "Validation Failed"
+            status: 422
+
+    InvalidJson:
+      description: Invalid JSON body
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "https://nene2.dev/problems/invalid-json"
+            title: "Invalid JSON"
+            status: 400
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "https://nene2.dev/problems/internal-server-error"
+            title: "Internal Server Error"
+            status: 500
